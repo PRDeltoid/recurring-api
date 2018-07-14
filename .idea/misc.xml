@@ -3,9 +3,6 @@
   <component name="CargoProjects">
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
-  <component name="ProjectDictionaryState">
-    <dictionary name="Taylor" />
-  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_9" default="false">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

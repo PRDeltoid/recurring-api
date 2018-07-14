@@ -13,7 +13,7 @@ pub struct Chore {
     pub id: Option<u32>,    //Chore ID
     pub name: String,       //User's name for the chore
     pub interval_time: u8,  //The time (in days) before a chore is due again
-    pub author_id: u32,     //ID of the user who created the chore schedule. Foreign key.
+    pub userid: u32,     //ID of the user who created the chore schedule. Foreign key.
     //Description?
     //Tags?
 }
