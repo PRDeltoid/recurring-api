@@ -14,7 +14,7 @@ extern crate r2d2_diesel;
 use diesel::prelude::*;
 use dotenv::dotenv;
 use std::env;
-use rocket_contrib::{Json};
+use rocket_contrib::{Json, Value};
 
 mod db;
 mod user;
@@ -26,7 +26,27 @@ use db::Connection;
 #[post("/", data="<user>")]
 fn create(user: Json<User>, connection: Connection) -> Json<User> {
     let insert = User {id: None, ..user.into_inner()};
-    Json(User::create_user(insert, &connection))
+    Json(User::create(insert, &connection))
+}
+
+#[get("/")]
+fn read(connection: Connection) -> Json<Value> {
+    Json(json!(User::read(&connection)))
+}
+
+#[put("/<id>", data="<user>")]
+fn update(id: i32, user: Json<User>, connection: Connection) -> Json<Value> {
+    let update = User { id: Some(id), ..user.into_inner() };
+    Json(json!({
+        "success": User::update(id,  update, &connection)
+    }))
+}
+
+#[delete("/<id>")]
+fn delete(id: i32, connection: Connection) -> Json<Value> {
+    Json(json!({
+        "success": User::delete(id, &connection)
+    }))
 }
 
 fn main() {
@@ -39,7 +59,8 @@ fn main() {
 
     rocket::ignite()
         .manage(manager)
-        .mount("/user", routes![create])
+        .mount("/user", routes![create,  update, delete])
+        .mount("/users", routes![read])
         .launch();
 
 }

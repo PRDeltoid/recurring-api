@@ -8,7 +8,7 @@ table! {
 
 table! {
     users (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         username -> Text,
     }
 }
