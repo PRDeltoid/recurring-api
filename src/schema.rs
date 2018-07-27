@@ -1,6 +1,6 @@
 table! {
     chores (id) {
-        id -> Int4,
+        id -> Nullable<Int4>,
         name -> Text,
         interval -> Int4,
     }
