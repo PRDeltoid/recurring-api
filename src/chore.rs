@@ -7,9 +7,10 @@ use db::Connection;
 #[table_name="chores"]
 #[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 pub struct Chore {
-    pub id: Option<i32>,    //User ID
-    pub name: String,   //User's name
-    pub interval: i32   //Interval of chore due
+    pub id: Option<i32>,    //Chore ID
+    pub name: String,       //Chore name
+    pub interval: i32,      //Interval of chore (in days)
+    pub userid: i32         //User ID who created the chore
 }
 
 impl Chore {

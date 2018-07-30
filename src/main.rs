@@ -10,6 +10,7 @@ extern crate rocket_contrib;
 #[macro_use] extern crate diesel;
 extern crate r2d2;
 extern crate r2d2_diesel;
+extern crate chrono;
 #[allow(unused_imports)]
 use diesel::prelude::*;
 use dotenv::dotenv;
@@ -20,6 +21,7 @@ mod db;
 mod user;
 mod chore;
 mod schema;
+mod chore_entry;
 
 
 mod users {
@@ -84,6 +86,40 @@ mod chores {
     }
 }
 
+mod chore_entries {
+    use rocket_contrib::{Json, Value};
+    use chore_entry::ChoreEntry;  //Chore Entry model
+    use db::Connection;
+
+    #[post("/", data = "<entry>")]
+    fn create(entry: Json<ChoreEntry>, connection: Connection) -> Json<ChoreEntry> {
+        let insert = ChoreEntry { id: None, ..entry.into_inner() };
+        Json(ChoreEntry::create(insert, &connection))
+    }
+
+    #[get("/")]
+    fn read(connection: Connection) -> Json<Value> {
+        Json(json!(ChoreEntry::read(&connection)))
+    }
+
+    #[put("/<id>", data = "<entry>")]
+    fn update(id: i32, entry: Json<ChoreEntry>, connection: Connection) -> Json<Value> {
+        let update = ChoreEntry { id: Some(id), ..entry.into_inner() };
+        Json(json!({
+            "success": ChoreEntry::update(id,  update, &connection)
+        }))
+    }
+
+    #[delete("/<id>")]
+    fn delete(id: i32, connection: Connection) -> Json<Value> {
+        Json(json!({
+            "success": ChoreEntry::delete(id, &connection)
+        }))
+    }
+
+
+}
+
 fn main() {
     dotenv().ok();
 
@@ -98,5 +134,7 @@ fn main() {
         .mount("/users", routes![users::read])
         .mount("/chore", routes![chores::create, chores::update, chores::delete])
         .mount("/chores", routes![chores::read])
+        .mount("/entry", routes![chore_entries::create, chore_entries::update, chore_entries::delete])
+        .mount("/entries", routes![chore_entries::read])
         .launch();
 }
