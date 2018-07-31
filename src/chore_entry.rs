@@ -28,8 +28,18 @@ impl ChoreEntry {
 
         chore_entries::table.order(chore_entries::id.desc()).first(&(**connection)).unwrap()
     }
-    pub fn read(connection: &Connection) -> Vec<ChoreEntry> {
-        chore_entries::table.order(chore_entries::id.asc())
+
+    pub fn read(id: i32, connection: &Connection) -> Vec<ChoreEntry> {
+        chore_entries::table.filter(chore_entries::id.eq(id))
+            .order(chore_entries::id.asc())
+            .load::<ChoreEntry>(&(**connection))
+            .unwrap()
+    }
+
+
+    pub fn read_entries(id: i32, connection: &Connection) -> Vec<ChoreEntry> {
+        chore_entries::table.filter(chore_entries::choreid.eq(id))
+            .order(chore_entries::id.asc())
             .load::<ChoreEntry>(&(**connection))
             .unwrap()
     }

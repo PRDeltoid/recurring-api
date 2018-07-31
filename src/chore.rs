@@ -29,13 +29,6 @@ impl Chore {
             .unwrap()
     }
 
-    pub fn read_entries(id: i32, connection: &Connection) -> Vec<ChoreEntry> {
-        chore_entries::table.filter(chore_entries::choreid.eq(id))
-            .order(chore_entries::id.asc())
-            .load::<ChoreEntry>(&(**connection))
-            .unwrap()
-    }
-
     pub fn update(id: i32, chore: Chore, connection: &Connection) -> bool {
         diesel::update(chores::table.find(id)).set(&chore).execute(&(**connection)).is_ok()
     }
