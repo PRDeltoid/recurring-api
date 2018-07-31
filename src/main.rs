@@ -70,6 +70,11 @@ mod chores {
         Json(json!(Chore::read(&connection)))
     }
 
+    #[get("/<id>")]
+    fn read_entries(id: i32, connection: Connection) -> Json<Value> {
+        Json(json!(Chore::read_entries(id, &connection)))
+    }
+
     #[put("/<id>", data = "<chore>")]
     fn update(id: i32, chore: Json<Chore>, connection: Connection) -> Json<Value> {
         let update = Chore { id: Some(id), ..chore.into_inner() };
@@ -132,7 +137,7 @@ fn main() {
         .manage(manager)
         .mount("/user", routes![users::create,  users::update, users::delete])
         .mount("/users", routes![users::read])
-        .mount("/chore", routes![chores::create, chores::update, chores::delete])
+        .mount("/chore", routes![chores::read_entries, chores::create, chores::update, chores::delete])
         .mount("/chores", routes![chores::read])
         .mount("/entry", routes![chore_entries::create, chore_entries::update, chore_entries::delete])
         .mount("/entries", routes![chore_entries::read])

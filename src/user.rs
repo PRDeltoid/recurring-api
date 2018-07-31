@@ -5,7 +5,7 @@ use schema::users;
 use db::Connection;
 
 #[table_name="users"]
-#[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
+#[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 pub struct User {
     pub id: Option<i32>,    //User ID
     pub username: String,   //User's name

@@ -5,9 +5,13 @@ use chrono::prelude::*;
 use chrono::NaiveDate;
 
 use db::Connection;
+use user::User;
+use chore::Chore;
 
+#[derive(Identifiable, Associations, Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
+#[belongs_to(User, foreign_key="userid")]
+#[belongs_to(Chore, foreign_key="choreid")]
 #[table_name="chore_entries"]
-#[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 pub struct ChoreEntry {
     pub id: Option<i32>,    //Entry ID
     pub date: NaiveDate,          //Entry date
