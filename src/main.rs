@@ -68,6 +68,7 @@ mod users {
 mod chores {
     use rocket_contrib::{Json, Value};
     use chore::Chore;  //Chore model
+    use chore_entry::ChoreEntry;
     use db::Connection;
     #[post("/", data = "<chore>")]
     fn create(chore: Json<Chore>, connection: Connection) -> Json<Chore> {
@@ -78,6 +79,21 @@ mod chores {
     #[get("/")]
     fn read(connection: Connection) -> Json<Value> {
         Json(json!(Chore::read(&connection)))
+    }
+
+    #[get("/<id>")]
+    fn read_chore(id: i32, connection: Connection) -> Json<Chore> {
+        Json(Chore::read_chore(id, &connection))
+    }
+
+    #[get("/<id>/lastdone")]
+    fn read_last_entry(id: i32, connection: Connection) -> Json<ChoreEntry> {
+        Json(Chore::read_last_entry(id, &connection))
+    }
+
+    #[get("/<id>/entries")]
+    fn read_entries(id: i32, connection: Connection) -> Json<Value> {
+        Json(json!(Chore::read_entries(id, &connection)))
     }
 
     #[put("/<id>", data = "<chore>")]
@@ -113,11 +129,6 @@ mod chore_entries {
 
     }
 
-    #[get("/<id>")]
-    fn read_entries(id: i32, connection: Connection) -> Json<Value> {
-        Json(json!(ChoreEntry::read_entries(id, &connection)))
-    }
-
     #[put("/<id>", data = "<entry>")]
     fn update(id: i32, entry: Json<ChoreEntry>, connection: Connection) -> Json<Value> {
         let update = ChoreEntry { id: Some(id), ..entry.into_inner() };
@@ -148,9 +159,8 @@ fn main() {
         .manage(manager)
         .mount("/user", routes![users::read_user, users::read_chores, users::create,  users::update, users::delete])
         .mount("/users", routes![users::read])
-        .mount("/chore", routes![chores::create, chores::update, chores::delete])
+        .mount("/chore", routes![chores::read_chore, chores::read_last_entry, chores::read_entries, chores::create, chores::update, chores::delete])
         .mount("/chores", routes![chores::read])
         .mount("/entry", routes![chore_entries::read, chore_entries::create, chore_entries::update, chore_entries::delete])
-        .mount("/entries", routes![chore_entries::read_entries])
         .launch();
 }

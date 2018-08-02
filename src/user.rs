@@ -21,6 +21,7 @@ impl User {
 
         users::table.order(users::id.desc()).first(&(**connection)).unwrap()
     }
+
     pub fn read(connection: &Connection) -> Vec<User> {
         users::table.order(users::id.asc())
             .load::<User>(&(**connection))
