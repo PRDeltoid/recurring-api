@@ -14,7 +14,7 @@ use chore::Chore;
 #[table_name="chore_entries"]
 pub struct ChoreEntry {
     pub id: Option<i32>,    //Entry ID
-    pub date: NaiveDate,          //Entry date
+    pub date: NaiveDate,    //Entry date
     pub userid: i32,        //User ID who created entry
     pub choreid: i32        //Chore ID of parent chore
 }

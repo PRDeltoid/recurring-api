@@ -107,8 +107,8 @@ mod chores {
     #[delete("/<id>")]
     fn delete(id: i32, connection: Connection) -> Json<Value> {
         Json(json!({
-        "success": Chore::delete(id, &connection)
-    }))
+            "success": Chore::delete(id, &connection)
+        }))
     }
 }
 
