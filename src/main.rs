@@ -39,6 +39,16 @@ mod users {
         Json(json!(User::read(&connection)))
     }
 
+    #[get("/<id>")]
+    fn read_user(id: i32, connection: Connection) -> Json<User> {
+       Json(User::read_user(id, &connection))
+    }
+
+    #[get("/<id>/chores")]
+    fn read_chores(id: i32, connection: Connection) -> Json<Value> {
+        Json(json!(User::read_chores(id, &connection)))
+    }
+
     #[put("/<id>", data = "<user>")]
     fn update(id: i32, user: Json<User>, connection: Connection) -> Json<Value> {
         let update = User { id: Some(id), ..user.into_inner() };
@@ -136,7 +146,7 @@ fn main() {
 
     rocket::ignite()
         .manage(manager)
-        .mount("/user", routes![users::create,  users::update, users::delete])
+        .mount("/user", routes![users::read_user, users::read_chores, users::create,  users::update, users::delete])
         .mount("/users", routes![users::read])
         .mount("/chore", routes![chores::create, chores::update, chores::delete])
         .mount("/chores", routes![chores::read])

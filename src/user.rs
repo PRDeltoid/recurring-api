@@ -1,8 +1,9 @@
 use diesel;
 use diesel::prelude::*;
-use schema::users;
+use schema::{chores, users};
 
 use db::Connection;
+use chore::Chore;
 
 #[table_name="users"]
 #[derive(Identifiable, Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
@@ -23,6 +24,20 @@ impl User {
     pub fn read(connection: &Connection) -> Vec<User> {
         users::table.order(users::id.asc())
             .load::<User>(&(**connection))
+            .unwrap()
+    }
+
+    pub fn read_user(id: i32, connection: &Connection) -> User {
+        users::table.filter(users::id.eq(id))
+            .order(users::id.asc())
+            .first(&(**connection))
+            .expect("Error pulling user")
+    }
+
+    pub fn read_chores(id: i32, connection: &Connection) -> Vec<Chore> {
+        chores::table.filter(chores::userid.eq(id))
+            .order(chores::id.asc())
+            .load::<Chore>(&(**connection))
             .unwrap()
     }
 
